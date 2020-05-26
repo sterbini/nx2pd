@@ -6,6 +6,7 @@ import pyspark.sql.functions as func
 from pyspark.sql.functions import col
 from pyspark.sql.types import *
 import numpy as np
+import pandas as pd
 
 def _replace_specials(myString):
     if isinstance(myString,str):
