@@ -3,5 +3,5 @@ A simple package to use with NXCALS.
 
 ## To install
 ```
-pip install --user https://github.com/sterbini/nx2pd.git
+pip install --user git+https://github.com/sterbini/nx2pd.git
 ```
