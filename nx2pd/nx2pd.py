@@ -104,4 +104,5 @@ def _to_spark(df, timestampConversion=False, sorted=False,n_cores=4):
     for i in my_df.columns:
         myDict[i]=_replace_specials(i)
     my_df=my_df.rename(columns=myDict)
-    aux=spark.createDataFrame(df)
+    aux=spark.createDataFrame(my_df)
+    return aux
