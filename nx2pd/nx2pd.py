@@ -8,6 +8,12 @@ from pyspark.sql.types import *
 import numpy as np
 import pandas as pd
 
+import pytimber
+ldb=pytimber.LoggingDB()
+search=ldb.search
+getUnit=ldb.getUnit
+getDescription=ldb.getDescription
+
 def _replace_specials(myString):
     if isinstance(myString,str):
         return myString.replace('.','@')
@@ -15,7 +21,7 @@ def _replace_specials(myString):
         return [i.replace('.','@') for i in myString]
     else:
         assert False
-     
+
 def _invert_replace_specials(myString):
     if isinstance(myString,str):
         return myString.replace('@','.') # clearly the operation is invertible only under some hypothesis
@@ -29,8 +35,14 @@ def _importNXCALS(variableName,t1, t2):
     start_time = time.time()
     t1=t1.tz_convert('UTC').tz_localize(None)
     t2=t2.tz_convert('UTC').tz_localize(None)
-    ds=DataQuery.builder(spark).byVariables().system("CMW")\
-    .startTime(t1.strftime('%Y-%m-%d %H:%M:%S.%f')).endTime(t2.strftime('%Y-%m-%d %H:%M:%S.%f')).variable(variableName).buildDataset()
+    
+    try:
+        ds=DataQuery.builder(spark).byVariables().system('CMW').startTime(t1.strftime('%Y-%m-%d %H:%M:%S.%f')).endTime(t2.strftime('%Y-%m-%d %H:%M:%S.%f')).variable(variableName).buildDataset()
+    except:
+        try: 
+            ds=DataQuery.builder(spark).byVariables().system('WINCCOA').startTime(t1.strftime('%Y-%m-%d %H:%M:%S.%f')).endTime(t2.strftime('%Y-%m-%d %H:%M:%S.%f')).variable(variableName).buildDataset()
+        except:
+            print('Variable not found in CMW and WINCCOA.')
     selectionStringDict={'int':{'value':'nxcals_value','label':'nxcals_value'}, 
                          'double':{'value':'nxcals_value','label':'nxcals_value'},
                          'float':{'value':'nxcals_value','label':'nxcals_value'},
