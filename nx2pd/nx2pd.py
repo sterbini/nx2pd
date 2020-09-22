@@ -24,12 +24,14 @@ def _invert_replace_specials(myString):
     else:
         assert False
         
-def _importNXCALS(variableName,t1, t2):
+def _importNXCALS(variableName,t1, t2, system="CMW"):
     ''' This hidden function takes a string a two pd datastamps. NXCALSsample is the fraction of rows to return.'''
+    if system not in ['CMW','WINCCOA']:
+        print(f'The system {system} is not yet implemented.')
     start_time = time.time()
     t1=t1.tz_convert('UTC').tz_localize(None)
     t2=t2.tz_convert('UTC').tz_localize(None)
-    ds=DataQuery.builder(spark).byVariables().system("CMW")\
+    ds=DataQuery.builder(spark).byVariables().system(system)\
     .startTime(t1.strftime('%Y-%m-%d %H:%M:%S.%f')).endTime(t2.strftime('%Y-%m-%d %H:%M:%S.%f')).variable(variableName).buildDataset()
     selectionStringDict={'int':{'value':'nxcals_value','label':'nxcals_value'}, 
                          'double':{'value':'nxcals_value','label':'nxcals_value'},
@@ -48,7 +50,7 @@ def _importNXCALS(variableName,t1, t2):
 def importNXCALS(inputList,t1,t2):
     outputList={}
     for i in inputList:
-        outputList[i]={'pyspark df':_importNXCALS(i,t1,t2), 't1':t1, 't2':t2}
+        outputList[i]={'pyspark df':_importNXCALS(i,t1,t2, system="CMW"), 't1':t1, 't2':t2}
     out=pd.DataFrame(outputList).transpose()
     return out
 
