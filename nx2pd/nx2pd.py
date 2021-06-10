@@ -8,11 +8,11 @@ from pyspark.sql.types import *
 import numpy as np
 import pandas as pd
 
-import pytimber
-ldb=pytimber.LoggingDB()
-search=ldb.search
-getUnit=ldb.getUnit
-getDescription=ldb.getDescription
+#import pytimber
+#ldb=pytimber.LoggingDB()
+#search=ldb.search
+#getUnit=ldb.getUnit
+#getDescription=ldb.getDescription
 
 def _replace_specials(myString):
     if isinstance(myString,str):
